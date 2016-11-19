@@ -26,7 +26,7 @@ a {
 }
 
 #background {
-  background: url(../img/bg.jpg);
+  background: url(../images/bg.jpg);
   background-size: cover;
   position: fixed;
   top: 0;
@@ -119,22 +119,22 @@ a {
   height: 25px;
 }
 #player .ctrl .control .rewind {
-  background-image: url(../img/rewind.png);
+  background-image: url(../images/rewind.png);
 }
 #player .ctrl .control .playback {
-  background-image: url(../img/play.png);
+  background-image: url(../images/play.png);
 }
 #player .ctrl .control .playback.playing {
-  background-image: url(../img/pause.png);
+  background-image: url(../images/pause.png);
 }
 #player .ctrl .control .fastforward {
-  background-image: url(../img/fastforward.png);
+  background-image: url(../images/fastforward.png);
 }
 #player .ctrl .control .volume .mute {
-  background-image: url(../img/volume.png);
+  background-image: url(../images/volume.png);
 }
 #player .ctrl .control .volume .mute.enable {
-  background-image: url(../img/mute.png);
+  background-image: url(../images/mute.png);
 }
 #player .ctrl .control .volume .slider {
   margin-top: 11px;
@@ -153,7 +153,7 @@ a {
   background-position: center bottom;
 }
 #player .ctrl .progress .repeat {
-  background-image: url(../img/repeat.png);
+  background-image: url(../images/repeat.png);
 }
 #player .ctrl .progress .repeat.once, #player .ctrl .progress .repeat.all {
   opacity: 1;
@@ -169,7 +169,7 @@ a {
   font-size: 8px;
 }
 #player .ctrl .progress .shuffle {
-  background-image: url(../img/shuffle.png);
+  background-image: url(../images/shuffle.png);
 }
 .slider {
   background: rgba(0, 0, 0, 0.3);
@@ -277,7 +277,7 @@ a {
   -ms-border-radius: 3px;
   -khtml-border-radius: 3px;
   border-radius: 3px;
-  background: url(../img/playing.png) no-repeat 0 center;
+  background: url(../images/playing.png) no-repeat 0 center;
   background-color: rgb(137, 203, 199);
   color: #fff;
   font-weight: bold;
