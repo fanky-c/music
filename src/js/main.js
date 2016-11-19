@@ -1,3 +1,4 @@
-import $ from './jquery-1.7.2.min';
-import ui from './jquery-ui-1.8.17.custom.min';
-import scrollTo from './jquery.scrollTo.min';
+import $ from './lib/jquery-1.7.2.min';
+import ui from './lib/jquery-ui-1.8.17.custom.min';
+import scrollTo from './lib/jquery.scrollTo.min';
+import audio from './lib/audio';
