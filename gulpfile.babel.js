@@ -10,6 +10,9 @@ import imagemin from 'gulp-imagemin';
 import pngquant from 'imagemin-pngquant';
 import clean from 'gulp-clean';
 import plumber from 'gulp-plumber';
+import cssmin from 'gulp-cssmin';
+import uglify from 'gulp-uglify';
+
 
 
 // browserify
@@ -41,6 +44,7 @@ gulp.task('sass', () => {
     .pipe(plumber())
     .pipe(sass())
     .pipe(autoprefixer())
+    .pipe(cssmin())
     .pipe(gulp.dest('dist/css'))
     .pipe(browserSync.reload({stream:true}))
     .pipe(notify({ message: 'sass task complete'}));
@@ -100,7 +104,8 @@ gulp.task('browserify',()=> {
         .pipe(sourcemaps.write({
             includeContent: false,
             sourceRoot: 'src'
-        }))      
+        }))
+        .pipe(uglify())      
         .pipe(gulp.dest('dist/js'))
         .pipe(notify({ message: 'browserify task complete' }));
 })
