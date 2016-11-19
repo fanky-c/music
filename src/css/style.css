@@ -277,7 +277,7 @@ a {
   -ms-border-radius: 3px;
   -khtml-border-radius: 3px;
   border-radius: 3px;
-  background: url(../images/playing.png) no-repeat 0 center;
+  background: url(../images/playing.png) no-repeat 8px center;
   background-color: rgb(137, 203, 199);
   color: #fff;
   font-weight: bold;

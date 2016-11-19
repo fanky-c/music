@@ -52,7 +52,7 @@ gulp.task('sass', () => {
 
 //html
 gulp.task('html',() => {
-   gulp.src('src/html/*.html')
+   gulp.src(['src/html/*.html','src/html/**/*.html'])
    .pipe(plumber())
    .pipe(gulp.dest('dist/html'))
    .pipe(notify({ message: 'html task complete' }));
@@ -72,7 +72,7 @@ gulp.task('images', () => {
 
 //js
 gulp.task('babel',() => {
-  gulp.src('src/js/*.js')
+  gulp.src(['src/js/*.js','src/js/**/*.js'])
     .pipe(plumber())
     .pipe(babel())       
     .pipe(gulp.dest('dist/js'))
@@ -120,17 +120,17 @@ gulp.task('serve', ['html','sass','images','babel'], () => {
         port: 9998
     });
 
-    gulp.watch("src/html/*.html").on('change', browserSync.reload);
-    gulp.watch('src/css/*.scss', ['sass']);
-    gulp.watch("src/js/*.js", ['js-watch']);
+    gulp.watch(["src/html/*.html","src/html/**/*.html"]).on('change', browserSync.reload);
+    gulp.watch(['src/css/*.sass','src/css/**/*.sass','src/css/*.css','src/css/**/*.css'], ['sass']);
+    gulp.watch(['src/js/*.js','src/js/**/*.js'], ['js-watch']);
 });
 
 gulp.task('default', ['file','html','sass','images','babel','serve','browserify','watch']);
 
 gulp.task('watch', () => {
-    gulp.watch("src/html/*.html",['html']); 
-    gulp.watch('src/css/app.scss',['sass']);
-    gulp.watch('src/images/*.{jpg,png,gif}',['images']);
-    gulp.watch('src/app.js', ['babel']);
-    gulp.watch('src/js/*.js', ['browserify']);
+    gulp.watch(['src/html/*.html','src/html/**/*.html'],['html']); 
+    gulp.watch(['src/css/*.sass','src/css/**/*.sass','src/css/*.css','src/css/**/*.css'],['sass']);
+    gulp.watch(['src/images/*','src/images/**/*'],['images']);
+    gulp.watch(['src/js/*.js','src/js/**/*.js'], ['babel']);
+    gulp.watch(['src/js/*.js','src/js/**/*.js'], ['browserify']);
 })
