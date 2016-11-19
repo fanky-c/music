@@ -6,8 +6,8 @@
     autoplay = true,
     playlist = [
     {
-        "title": "D大调卡农 - 帕赫贝尔",
-        "artist": "纯音乐"
+        "title": "123",
+        "artist": "轻音乐"
     }
 ]
 
@@ -147,7 +147,7 @@
   // Load track
   var loadMusic = function(i){
     var item = playlist[i],
-      newaudio = $('<audio>').html('<source src="../file/'+item.title+' - '+item.artist+'.mp3">').appendTo('#player');
+      newaudio = $('<audio>').html('<source src="../file/'+item.title+'.mp3">').appendTo('#player');
     
     $('.cover').html('<img src="../images/bg'+random+'.webp" alt="'+item.title+'">');
     $('.tag').html('<strong>'+item.title+'</strong><span class="artist">'+item.artist+'</span>');
