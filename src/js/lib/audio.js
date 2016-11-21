@@ -195,7 +195,7 @@ const loadMusic = function(i){
 	audio.addEventListener('ended', ended, false);
 }
 
-loadMusic(currentTrack);
+loadMusic(currentTrack || 0);
 
 
 //暂停播放
@@ -240,7 +240,8 @@ $('#playlist li').each(function(i) {
 	} else if (repeat == 2) {
 		$('.repeat').addClass('all');
 	}
-
+   
+   //单曲循环和顺序播放
   $('.repeat').on('click', function() {
   	if ($(this).hasClass('once')) {
   		repeat = localStorage.repeat = 2;
@@ -253,7 +254,8 @@ $('#playlist li').each(function(i) {
   		$(this).addClass('once');
   	}
   });
-
+  
+  //随机播放
   $('.shuffle').on('click', function() {
   	if ($(this).hasClass('enable')) {
   		shuffle = localStorage.shuffle = 'false';
