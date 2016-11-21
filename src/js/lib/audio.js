@@ -6,6 +6,7 @@ let repeat = localStorage.repeat || 0,
 let time = new Date(),
   	currentTrack = shuffle === 'true' ? time.getTime() % playlist.length : 0,
   	trigger = false,
+  	track = null,
   	audio, timeout, isPlaying, playCounts;
 
 /**
@@ -14,7 +15,10 @@ let time = new Date(),
 playlist = [{
 	     	"title": "123",
 	     	"artist": "轻音乐"
-	    }]	    
+	       },{
+	     	"title": "Scorpions",
+	     	"artist": "抒情"	       	  
+	       }]	    
 for(let i=0; i<playlist.length; ++i){
       let itemList = playlist[i];
       $('#playlist').append('<li>'+itemList.title+' - '+itemList.artist+'</li>');
@@ -167,7 +171,7 @@ const afterLoad = function(){
  *   加载文件,从加载列表中获取
  */
 
-let random = Math.floor(1 + Math.random() * 9);   //随即切换背景图
+let random = Math.floor(1 + Math.random() * 12);   //随即切换背景图
 $('#background').css('background-image', 'url(../images/bg' + random + '.webp)');
 
 const loadMusic = function(i){
