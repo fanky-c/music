@@ -10,6 +10,15 @@ let time = new Date(),
   	audio, timeout, isPlaying, playCounts;
 
 /**
+ * 随即切换背景图
+ */
+const getRandom = function(num){
+	return Math.floor(1 + Math.random() * num);
+}
+$('#background').css('background-image', 'url(../images/bg' + getRandom(12) + '.webp)');
+
+
+/**
  *  音频列表UI
  */
 playlist = [{
@@ -18,7 +27,14 @@ playlist = [{
 	       },{
 	     	"title": "Scorpions",
 	     	"artist": "抒情"	       	  
-	       }]	    
+	       },{
+	     	"title": "Mika - Relax, Take It Easy",
+	     	"artist": "抒情"	       	  
+	       },{
+	     	"title": "Sam Tsui - Sugar",
+	     	"artist": "抒情"	       	  
+	       }];
+	       	    
 for(let i=0; i<playlist.length; ++i){
       let itemList = playlist[i];
       $('#playlist').append('<li>'+itemList.title+' - '+itemList.artist+'</li>');
@@ -170,15 +186,13 @@ const afterLoad = function(){
 /**
  *   加载文件,从加载列表中获取
  */
-
-let random = Math.floor(1 + Math.random() * 12);   //随即切换背景图
-$('#background').css('background-image', 'url(../images/bg' + random + '.webp)');
-
 const loadMusic = function(i){
 	var item = playlist[i],
+	    random = getRandom(12),
 		newaudio = $('<audio>').html('<source src="../file/' + item.title + '.mp3">').appendTo('#player');
 
 	$('.cover').html('<img src="../images/bg' + random + '.webp" alt="' + item.title + '">');
+	$('#background').css('background-image', 'url(../images/bg' + random + '.webp)');
 	$('.tag').html('<strong>' + item.title + '</strong><span class="artist">' + item.artist + '</span>');
 	$('#playlist li').removeClass('playing').eq(i).addClass('playing');
 	if ($('#playlist li').eq(i).offset().top > 600) {
