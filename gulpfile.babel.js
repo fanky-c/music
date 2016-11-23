@@ -40,7 +40,7 @@ gulp.task('file',() => {
 
 //css
 gulp.task('sass', () => {
-  gulp.src(['src/css/*.scss','src/css/*.css'])
+  gulp.src(['src/css/*.scss','src/css/**/*.scss'])
     .pipe(plumber())
     .pipe(sass())
     .pipe(autoprefixer())
@@ -105,7 +105,7 @@ gulp.task('browserify',()=> {
             includeContent: false,
             sourceRoot: 'src'
         }))
-        .pipe(uglify())      
+        //.pipe(uglify())      
         .pipe(gulp.dest('dist/js'))
         .pipe(notify({ message: 'browserify task complete' }));
 })
@@ -121,7 +121,7 @@ gulp.task('serve', ['html','sass','images','babel'], () => {
     });
 
     gulp.watch(["src/html/*.html","src/html/**/*.html"]).on('change', browserSync.reload);
-    gulp.watch(['src/css/*.sass','src/css/**/*.sass','src/css/*.css','src/css/**/*.css'], ['sass']);
+    gulp.watch(['src/css/*.scss','src/css/**/*.scss','src/css/*.css','src/css/**/*.css'], ['sass']);
     gulp.watch(['src/js/*.js','src/js/**/*.js'], ['js-watch']);
 });
 
@@ -129,7 +129,7 @@ gulp.task('default', ['file','html','sass','images','babel','serve','browserify'
 
 gulp.task('watch', () => {
     gulp.watch(['src/html/*.html','src/html/**/*.html'],['html']); 
-    gulp.watch(['src/css/*.sass','src/css/**/*.sass','src/css/*.css','src/css/**/*.css'],['sass']);
+    gulp.watch(['src/css/*.scss','src/css/**/*.scss','src/css/*.css','src/css/**/*.css'],['sass']);
     gulp.watch(['src/images/*','src/images/**/*'],['images']);
     gulp.watch(['src/js/*.js','src/js/**/*.js'], ['babel']);
     gulp.watch(['src/js/*.js','src/js/**/*.js'], ['browserify']);
