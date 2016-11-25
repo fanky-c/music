@@ -1,5 +1,4 @@
 ;(function () {
-    alert(2)
     var rotatingSlider = function (selector, options) {
         function initSingleSlider($el, options) {
             var $slider, $rotaters, $handle, $handleItems, numOfItems, angle, currentAngle = 0, prefix = '.slider3d__', handlePrefix = prefix + 'handle__', rotating = false;
