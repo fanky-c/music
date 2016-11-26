@@ -306,3 +306,7 @@ $(document).keydown(function(event) {
 		}
 	}
 });
+
+$(function(){
+   rotatingSlider('.slider3d');
+})

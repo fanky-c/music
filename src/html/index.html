@@ -61,27 +61,40 @@
             <!-- 第二屏 -->
             <div class="slider3d__item">
               <div class="twoPage">
-                  我是第二屏
+                      <div class="canvas" id="canvasColumn"></div>
               </div>
             </div>
             
             <!-- 第三屏 -->
             <div class="slider3d__item">
                <div class="threePage">
+                    <div class="canvas"  id="canvasDot"></div>
                </div>
             </div>  
         </div>
       </div>
-  </div>  
+  </div>
+
+
+     <div class="slider3d__controls">
+<!--       <div class="slider3d__handle">
+        <div class="slider3d__handle__inner">
+          <div class="slider3d__handle__rotater">
+            <div class="slider3d__handle__item active">Page 1</div>
+            <div class="slider3d__handle__item">Page 2</div>
+            <div class="slider3d__handle__item">Page 3</div>
+          </div>
+        </div>
+      </div> -->
+      <div class="slider3d__control m--up"></div>
+      <div class="slider3d__control m--down"></div>
+    </div>
+
  </div>
 </body>
 <script src="../js/lib/jquery-1.7.2.min.js"></script>
 <script src="../js/lib/jquery-ui-1.8.17.custom.min.js"></script>
 <script src="../js/lib/jquery.scrollTo.min.js"></script>
 <script src="../js/bundle.js"></script>
-<script type="text/javascript">
-  $(function(){
-  rotatingSlider('.slider3d');
-})
-</script>
+<script src="../js/lib/musicVisualizer.js"></script>
 </html>
