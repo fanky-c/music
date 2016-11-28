@@ -1,3 +1,8 @@
+import {renderInit,visualize} from './musicVisualizer';
+renderInit();
+
+
+
 let repeat = localStorage.repeat || 0,
 	shuffle = localStorage.shuffle || 'false',
 	continous = true,
@@ -172,7 +177,8 @@ const ended = () =>{
 
 const beforeLoad = function () {
     var endVal = this.seekable && this.seekable.length ? this.seekable.end(0) : 0;
-    $('.progress .loaded').css('width', (100 / (this.duration || 1) * endVal) +'%'); 
+    $('.progress .loaded').css('width', (100 / (this.duration || 1) * endVal) +'%');
+    visualize(this); 
 }
 
 

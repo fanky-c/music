@@ -15,7 +15,7 @@ var ARR = []; //该数组保存canvas中各图形的x,y坐标以及他们的颜�
 ARR.dotMode = "random";
 var isMobile = false;
 var isApple = false;
-!function() {
+(() => {
 	var u = window.navigator.userAgent;
 	var m = /(Android)|(iPhone)|(iPad)|(iPod)/i;
 	if (m.test(u)) {
@@ -25,28 +25,8 @@ var isApple = false;
 	if (ap.test(u)) {
 		isApple = true;
 	}
-}();
+})();
 
-//Android和苹果设备则设置音乐片段为16
-var SIZE = 32; //音乐片段数
-isMobile && (SIZE = 16);
-
-window.onresize = init;
-init();
-
-//初始化heigth，width以及canvas的宽高
-function init(){
-	HEIGHT = $(window).height();
-	WIDTH = $(window).width();
-	canvasDot.height = canvasColumn.height = HEIGHT;
-	canvasDot.width = canvasColumn.width = WIDTH;
-	
-	getArr(ctxColumn);
-	Render(ctxColumn,'Column');
-
-	getArr(ctxDot);
-	Render(ctxDot,'Dot');
-}
 
 /**
  * [random 随机值]
@@ -54,7 +34,7 @@ function init(){
  * @param  {[type]} _max [description]
  * @return {[type]}      [description]
  */
-function random(_min, _max){
+const random = (_min, _max) => {
 	var min = _min || 0;
 	var max = _max || 1;
 	return max >= min ? Math.round(Math.random()*(max - min) + min) : 0;
@@ -64,7 +44,7 @@ function random(_min, _max){
  * [getArr 	创建线性渐变对象，以便绘制柱状图使用]
  * @return {[type]} [description]
  */
-function getArr(ctx) {
+const getArr = (ctx) => {
 	ARR.length = 0;
 	ARR.linearGradient = ctx.createLinearGradient(0, HEIGHT, 0, 0);
 	ARR.linearGradient.addColorStop(0, 'green');
@@ -92,7 +72,7 @@ function getArr(ctx) {
 /**
  * [Render 渲染]
  */
-function Render(ctx,type){	
+const Render = (ctx,type) => {	
 	var o = null;
 	var RenderCanvasType = type;		
 	var w = Math.round(WIDTH / SIZE);
@@ -135,4 +115,72 @@ function Render(ctx,type){
 		}
 		
 	}	
+}
+
+//初始化heigth，width以及canvas的宽高
+const init = () => {
+	HEIGHT = $(window).height();
+	WIDTH = $(window).width();
+	canvasDot.height = canvasColumn.height = HEIGHT;
+	canvasDot.width = canvasColumn.width = WIDTH;
+	
+	getArr(ctxColumn);
+	Render(ctxColumn,'Column');
+
+	getArr(ctxDot);
+	Render(ctxDot,'Dot');
+}
+
+/**
+ * [渲染canvas]
+ * @return {[type]} [description]
+ */
+export const renderInit = () => {
+     init();
+     window.onresize = init;	  
+}
+
+/**
+ * [ac description]
+ * @type {[type]}
+ */
+
+//创建音频环境
+var ac = new (window.AudioContext ||window.webkitAudioContext || window.mozAudioContext)();
+
+//控制音量的GainNode
+var gainNode = ac[ac.createGain ? "createGain" : "createGainNode"]();
+
+//音频分析对象
+var analyser = ac.createAnalyser();
+
+analyser.connect(gainNode);
+
+gainNode.connect(ac.destination);
+
+//Android和苹果设备则设置音乐片段为16
+var SIZE = 32; //音乐片段数
+isMobile && (SIZE = 16);
+
+/**
+ * [视频可视化]
+ * @param  {[type]} mv [description]
+ * @return {[type]}    [description]
+ */
+export const visualize = (mv) => {
+		mv.analyser.fftSize = SIZE * 2;
+		var arr = new Uint8Array(mv.analyser.frequencyBinCount);
+
+		var requestAnimationFrame = window.requestAnimationFrame || 
+									window.webkitRequestAnimationFrame || 
+									window.oRequestAnimationFrame || 
+									window.mzRequestAnimationFrame;
+		function v(){
+			mv.analyser.getByteFrequencyData(arr);
+			//将分析得到的音频数据传递给mv.visualizer方法可视化
+			mv.visualizer.call(arr);
+			requestAnimationFrame(v);
+		}
+
+		 requestAnimationFrame(v);	  
 }
