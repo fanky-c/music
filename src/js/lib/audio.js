@@ -1,7 +1,4 @@
 import {renderInit,visualize} from './musicVisualizer';
-renderInit();
-
-
 
 let repeat = localStorage.repeat || 0,
 	shuffle = localStorage.shuffle || 'false',
@@ -178,7 +175,7 @@ const ended = () =>{
 const beforeLoad = function () {
     var endVal = this.seekable && this.seekable.length ? this.seekable.end(0) : 0;
     $('.progress .loaded').css('width', (100 / (this.duration || 1) * endVal) +'%');
-    visualize(this); 
+    console.log(this) 
 }
 
 
@@ -243,7 +240,7 @@ $('.fastforward').on('click', () => {
 });
 
 //自己选择
-$('#playlist li').each((i) => {
+$('#playlist li').each(function(i){
 	var _i = i;
 	$(this).on('click', () => {
 		switchTrack(_i);
@@ -288,6 +285,7 @@ $('#playlist li').each((i) => {
  *  监听键盘事件
  */
 $(document).keydown((event) => {
+	event.preventDefault();
 	if (event.keyCode == 37) {
 		if (shuffle === 'true') {
 			shufflePlay();
@@ -301,7 +299,6 @@ $(document).keydown((event) => {
 			switchTrack(++currentTrack);
 		}
 	} else if (event.keyCode == 32) {
-		event.preventDefault();
 		if ($('.playback').hasClass('playing')) {
 			pause();
 		} else {
@@ -312,4 +309,5 @@ $(document).keydown((event) => {
 
 $(() => {
    rotatingSlider('.slider3d');
+   renderInit();
 })

@@ -163,6 +163,21 @@ var SIZE = 32; //音乐片段数
 isMobile && (SIZE = 16);
 
 /**
+ * [解码]
+ * @param  {[type]} arraybuffer [description]
+ * @param  {[type]} fun         [description]
+ * @return {[type]}             [description]
+ */
+const decode = (arraybuffer,fun) => {
+		 ac.decodeAudioData(arraybuffer, function(buffer){
+			var bufferSourceNode = ac.createBufferSource();
+			bufferSourceNode.buffer = buffer;
+			fun.call(bufferSourceNode);
+		},function(err){
+			console.log(err);
+		})	  
+}
+/**
  * [视频可视化]
  * @param  {[type]} mv [description]
  * @return {[type]}    [description]
