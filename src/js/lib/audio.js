@@ -22,9 +22,6 @@ $('#background').css('background-image', 'url(../images/bg' + getRandom(12) + '.
  *  音频列表UI
  */
 playlist = [{
-	     	"title": "123",
-	     	"artist": "轻音乐"
-	       },{
 	     	"title": "Scorpions",
 	     	"artist": "抒情"	       	  
 	       },{
