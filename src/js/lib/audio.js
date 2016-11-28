@@ -114,7 +114,7 @@ $('.volume .slider').slider({
 }).children('.pace').css('width', volume * 100 + '%');
 
 //无声和有声切换
-$('.mute').click(() => {
+$('.mute').click(function(){
 	if ($(this).hasClass('enable')) {
 		setVolume($(this).data('volume'));
 		$(this).removeClass('enable');
@@ -170,7 +170,7 @@ const ended = () =>{
 	}
 }
 
-const beforeLoad = () => {
+const beforeLoad = function () {
     var endVal = this.seekable && this.seekable.length ? this.seekable.end(0) : 0;
     $('.progress .loaded').css('width', (100 / (this.duration || 1) * endVal) +'%'); 
 }
@@ -210,7 +210,7 @@ loadMusic(currentTrack || 0);
 
 
 //暂停播放
-$('.playback').on('click', () => {
+$('.playback').on('click', function(){
   	if ($(this).hasClass('playing')) {
   		pause();
   	} else {
@@ -253,7 +253,7 @@ $('#playlist li').each((i) => {
 	}
    
    //单曲循环和顺序播放
-  $('.repeat').on('click', () => {
+  $('.repeat').on('click', function(){
   	if ($(this).hasClass('once')) {
   		repeat = localStorage.repeat = 2;
   		$(this).removeClass('once').addClass('all');
@@ -267,7 +267,7 @@ $('#playlist li').each((i) => {
   });
   
   //随机播放
-  $('.shuffle').on('click', () => {
+  $('.shuffle').on('click', function(){
   	if ($(this).hasClass('enable')) {
   		shuffle = localStorage.shuffle = 'false';
   		$(this).removeClass('enable');
