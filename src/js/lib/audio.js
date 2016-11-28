@@ -12,7 +12,7 @@ let time = new Date(),
 /**
  * 随即切换背景图
  */
-const getRandom = function(num){
+const getRandom = (num) => {
 	return Math.floor(1 + Math.random() * num);
 }
 $('#background').css('background-image', 'url(../images/bg' + getRandom(12) + '.webp)');
@@ -45,21 +45,21 @@ for(let i=0; i<playlist.length; ++i){
 /**
  *  操作音乐播放器
  */
-const play = function(){
+const play = () => {
 	 audio.play();
 	 $('.playback').addClass('playing');
 	 timeout = setInterval(updateAudioProgress, 500);
 	 isPlaying = true;
 }
 
-const pause = function(){
+const pause = () => {
 	  audio.pause();
 	  $('.playback').removeClass('playing');
 	  updateAudioProgress && clearInterval(updateAudioProgress);
 	  isPlaying = false;
 }
 
-const setAudioProgress = function(value){
+const setAudioProgress = (value) => {
     var currentSec = parseInt(value%60) < 10 ? '0' + parseInt(value%60) : parseInt(value%60),
         ratio = value / audio.duration * 100;
 
@@ -68,18 +68,18 @@ const setAudioProgress = function(value){
 	    $('.progress .slider a').css('left', ratio + '%');	 
 }
 
-const updateAudioProgress = function (){
+const updateAudioProgress = () => {
 	  setAudioProgress(audio.currentTime);   
 }
 
 $('.progress .slider').slider({
 	step: 0.1,
-	slide: function(event, ui) {
+	slide: (event, ui) => {
 		$(this).addClass('enable');
 		setAudioProgress(audio.duration * ui.value / 100);
 		clearInterval(timeout);
 	},
-	stop: function(event, ui) {
+	stop: (event, ui) => {
 		audio.currentTime = audio.duration * ui.value / 100;
 		$(this).removeClass('enable');
 		timeout = setInterval(updateAudioProgress, 500);
@@ -92,7 +92,7 @@ $('.progress .slider').slider({
 /**
  *  控制音量
  */
-const setVolume = function(value){
+const setVolume = (value) => {
        audio.volume = localStorage.volume = value;
        $('.volume .pace').css('width', value * 100 + '%');
        $('.volume .slider a').css('left', value * 100 + '%');       
@@ -106,12 +106,12 @@ $('.volume .slider').slider({
 	min: 0,
 	step: 0.01,
 	value: volume,
-	slide: function(event, ui) {
+	slide: (event, ui) => {
 		setVolume(ui.value);
 		$(this).addClass('enable');
 		$('.mute').removeClass('enable');
 	},
-	stop: function() {
+	stop: () => {
 		$(this).removeClass('enable');
 	}
 }).children('.pace').css('width', volume * 100 + '%');
@@ -131,7 +131,7 @@ $('.mute').click(function() {
 /**
  *   循环模式
  */
-const switchTrack = function(i){
+const switchTrack = (i) => {
     if (i < 0){
       track = currentTrack = playlist.length - 1;
     } else if (i >= playlist.length){
@@ -144,7 +144,7 @@ const switchTrack = function(i){
     if (isPlaying == true) play();   	  
 }
 
-const shufflePlay = function(){
+const shufflePlay = () => {
 	var time = new Date(),
 		lastTrack = currentTrack;
 
@@ -153,7 +153,7 @@ const shufflePlay = function(){
 	switchTrack(currentTrack);
 }
 
-const ended = function(){
+const ended = () =>{
 	pause();
 	audio.currentTime = 0;
 	playCounts++;
@@ -173,20 +173,20 @@ const ended = function(){
 	}
 }
 
-const beforeLoad = function(){
+const beforeLoad = () => {
     var endVal = this.seekable && this.seekable.length ? this.seekable.end(0) : 0;
     $('.progress .loaded').css('width', (100 / (this.duration || 1) * endVal) +'%'); 
 }
 
 
-const afterLoad = function(){
+const afterLoad = () => {
 	if (autoplay == true) play();
 }
 
 /**
  *   加载文件,从加载列表中获取
  */
-const loadMusic = function(i){
+const loadMusic = (i) => {
 	var item = playlist[i],
 	    random = getRandom(12),
 		newaudio = $('<audio>').html('<source src="../file/' + item.title + '.mp3">').appendTo('#player');
@@ -213,7 +213,7 @@ loadMusic(currentTrack || 0);
 
 
 //暂停播放
-$('.playback').on('click', function() {
+$('.playback').on('click', () => {
   	if ($(this).hasClass('playing')) {
   		pause();
   	} else {
@@ -222,7 +222,7 @@ $('.playback').on('click', function() {
 });
 
 //上一首
-$('.rewind').on('click', function() {
+$('.rewind').on('click', () => {
 	if (shuffle === 'true') {
 		shufflePlay();
 	} else {
@@ -231,7 +231,7 @@ $('.rewind').on('click', function() {
 });
 
 //下一首
-$('.fastforward').on('click', function() {
+$('.fastforward').on('click', () => {
 	if (shuffle === 'true') {
 		shufflePlay();
 	} else {
@@ -240,9 +240,9 @@ $('.fastforward').on('click', function() {
 });
 
 //自己选择
-$('#playlist li').each(function(i) {
+$('#playlist li').each((i) => {
 	var _i = i;
-	$(this).on('click', function() {
+	$(this).on('click', () => {
 		switchTrack(_i);
 	});
 });
@@ -256,7 +256,7 @@ $('#playlist li').each(function(i) {
 	}
    
    //单曲循环和顺序播放
-  $('.repeat').on('click', function() {
+  $('.repeat').on('click', () => {
   	if ($(this).hasClass('once')) {
   		repeat = localStorage.repeat = 2;
   		$(this).removeClass('once').addClass('all');
@@ -270,7 +270,7 @@ $('#playlist li').each(function(i) {
   });
   
   //随机播放
-  $('.shuffle').on('click', function() {
+  $('.shuffle').on('click', () => {
   	if ($(this).hasClass('enable')) {
   		shuffle = localStorage.shuffle = 'false';
   		$(this).removeClass('enable');
@@ -307,6 +307,6 @@ $(document).keydown(function(event) {
 	}
 });
 
-$(function(){
+$(() => {
    rotatingSlider('.slider3d');
 })

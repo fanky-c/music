@@ -40,6 +40,7 @@ function init(){
 	WIDTH = $(window).width();
 	canvasDot.height = canvasColumn.height = HEIGHT;
 	canvasDot.width = canvasColumn.width = WIDTH;
+	
 	getArr(ctxColumn);
 	Render(ctxColumn,'Column');
 
