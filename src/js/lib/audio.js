@@ -117,7 +117,7 @@ $('.volume .slider').slider({
 }).children('.pace').css('width', volume * 100 + '%');
 
 //无声和有声切换
-$('.mute').click(function() {
+$('.mute').click(() => {
 	if ($(this).hasClass('enable')) {
 		setVolume($(this).data('volume'));
 		$(this).removeClass('enable');
@@ -284,7 +284,7 @@ $('#playlist li').each((i) => {
 /**
  *  监听键盘事件
  */
-$(document).keydown(function(event) {
+$(document).keydown((event) => {
 	if (event.keyCode == 37) {
 		if (shuffle === 'true') {
 			shufflePlay();
