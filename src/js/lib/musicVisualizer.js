@@ -289,6 +289,16 @@ Visualizer.prototype = {
           audioBufferSouceNode.start(0);
           this.status = 1;
           this.source = audioBufferSouceNode;
+
+	      var array = new Uint8Array(analyser.frequencyBinCount);
+
+		   function v(){
+				analyser.getByteFrequencyData(array);
+				requestAnimationFrame(v);
+			}
+		
+	      requestAnimationFrame(v);
+
           audioBufferSouceNode.onended = function(){
           	   that._audioEnd();
           }
