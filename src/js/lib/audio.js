@@ -1,4 +1,4 @@
-import {renderInit,visualize} from './musicVisualizer';
+import {renderInit,Visualizer} from './musicVisualizer';
 
 let repeat = localStorage.repeat || 0,
 	shuffle = localStorage.shuffle || 'false',
@@ -175,7 +175,6 @@ const ended = () =>{
 const beforeLoad = function () {
     var endVal = this.seekable && this.seekable.length ? this.seekable.end(0) : 0;
     $('.progress .loaded').css('width', (100 / (this.duration || 1) * endVal) +'%');
-    console.log(this) 
 }
 
 
@@ -207,6 +206,10 @@ const loadMusic = (i) => {
 	audio.addEventListener('durationchange', beforeLoad, false);
 	audio.addEventListener('canplay', afterLoad, false);
 	audio.addEventListener('ended', ended, false);
+	
+
+	new Visualizer('../file/'+ item.title + '.mp3');
+
 }
 
 loadMusic(currentTrack || 0);
