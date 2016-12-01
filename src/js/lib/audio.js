@@ -172,9 +172,9 @@ const ended = () =>{
 	}
 }
 
-const beforeLoad = function () {
-    var endVal = this.seekable && this.seekable.length ? this.seekable.end(0) : 0;
-    $('.progress .loaded').css('width', (100 / (this.duration || 1) * endVal) +'%');
+const beforeLoad = function (obj) {
+    var endVal = obj.seekable && obj.seekable.length ? $(obj)[0].seekable.end(0) : 0;
+    $('.progress .loaded').css('width', (100 / (obj.duration || 1) * endVal) +'%');
 }
 
 
@@ -202,13 +202,40 @@ const loadMusic = (i) => {
 	$('title').text(item.title + " - " + item.artist);
 	audio = newaudio[0];
 	audio.volume = $('.mute').hasClass('enable') ? 0 : volume;
-	audio.addEventListener('progress', beforeLoad, false);
-	audio.addEventListener('durationchange', beforeLoad, false);
-	audio.addEventListener('canplay', afterLoad, false);
-	audio.addEventListener('ended', ended, false);
+	
+	//浏览器已加载声频、视频的元数据时触发的事件
+	audio.addEventListener('loadedmetadata', function(){
+		   afterLoad();
+		   console.log(this);
+		   console.log('loadedmetadata');
+	}, false);    
+	
+	//浏览器正在下载媒体数据时
+	audio.addEventListener('progress', function(){
+		  beforeLoad(this);
+		  console.log('progress');
+	}, false);    
+	
+	//更改声频、视频的时长时
+	audio.addEventListener('durationchange', function(){
+		  beforeLoad(this);
+		  console.log('durationchange');
+	}, false); 
+	
+	//浏览器可以播放媒体数据时
+	audio.addEventListener('canplay', function(){
+		  afterLoad();
+		  console.log('canplay');
+	}, false);
+
+	//当浏览器可以在不因缓冲而停顿的情况下播放时
+	audio.addEventListener('ended', function(){
+		  ended();
+		  console.log('ended');
+	}, false);       
 	
 
-	new Visualizer('../file/'+ item.title + '.mp3');
+	//new Visualizer('../file/'+ item.title + '.mp3');
 
 }
 
