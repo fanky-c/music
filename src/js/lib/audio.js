@@ -202,13 +202,29 @@ const loadMusic = (i) => {
 	$('title').text(item.title + " - " + item.artist);
 	audio = newaudio[0];
 	audio.volume = $('.mute').hasClass('enable') ? 0 : volume;
+    
+    //提示音频的元数据已加载
+	audio.addEventListener('loadstart',function(){
+		console.log('loadstart'); 
+	},false)
+
+	//更改声频、视频的时长时
+	audio.addEventListener('durationchange', function(){
+		  beforeLoad(this);
+		  console.log('durationchange');
+	}, false); 
+
 	
-	//浏览器已加载声频、视频的元数据时触发的事件
+	//提示音频的元数据已加载
 	audio.addEventListener('loadedmetadata', function(){
 		   afterLoad();
-		   console.log(this);
 		   console.log('loadedmetadata');
-	}, false);    
+	}, false);
+    
+    //提示当前帧的数据是可用的
+	audio.addEventListener('loadeddata',function(){
+		  console.log('loadeddata');
+	},false)    
 	
 	//浏览器正在下载媒体数据时
 	audio.addEventListener('progress', function(){
@@ -216,15 +232,11 @@ const loadMusic = (i) => {
 		  console.log('progress');
 	}, false);    
 	
-	//更改声频、视频的时长时
-	audio.addEventListener('durationchange', function(){
-		  beforeLoad(this);
-		  console.log('durationchange');
-	}, false); 
 	
 	//浏览器可以播放媒体数据时
 	audio.addEventListener('canplay', function(){
 		  afterLoad();
+		  console.log(this);
 		  console.log('canplay');
 	}, false);
 
@@ -232,10 +244,18 @@ const loadMusic = (i) => {
 	audio.addEventListener('ended', function(){
 		  ended();
 		  console.log('ended');
-	}, false);       
+	}, false);
+
+	//提示视频能够不停顿地一直播放
+	audio.addEventListener('canplaythrough',function(){
+		  console.log('canplaythrough');
+	},false)       
 	
 
-	//new Visualizer('../file/'+ item.title + '.mp3');
+	var visualizer  = new Visualizer();
+	visualizer.load('../file/'+ item.title + '.mp3',function(){
+		    alert(this)
+	})
 
 }
 

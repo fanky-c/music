@@ -219,7 +219,7 @@ export let Visualizer = function(file){
 	 console.log(this.file)
 	 this.audioContext = null;
 	 this.source = null;
-	 this.init();
+	 //this.init();
 }
 
 Visualizer.prototype = {
@@ -227,6 +227,19 @@ Visualizer.prototype = {
 	  init: function(){
            this.prepare();
            this.start();
+	  },
+	  load: function(url,fun){
+         var xhr = new XMLHttpRequest();
+         xhr.abort();
+         xhr.open('GET',url,false);
+         xhr.responseType = 'arraybuffer';
+
+         xhr.onload = function(){
+               fun && fun.call(xhr.response);
+         }
+
+         xhr.send();
+
 	  },
 	  prepare: function(){
 	  	  window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext;
