@@ -252,10 +252,10 @@ const loadMusic = (i) => {
 	},false)       
 	
 
-	var visualizer  = new Visualizer();
-	visualizer.load('../file/'+ item.title + '.mp3',function(){
-		    alert(this)
-	})
+	// var visualizer  = new Visualizer();
+	// visualizer.load('../file/'+ item.title + '.mp3',function(){
+	// 	    alert(this)
+	// })
 
 }
 

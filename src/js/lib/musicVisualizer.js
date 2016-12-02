@@ -214,32 +214,53 @@ export const renderInit = () => {
  * @param {[type]} [varname] [description]
  */
 
-export let Visualizer = function(file){
-	 this.file = file;
-	 console.log(this.file)
-	 this.audioContext = null;
-	 this.source = null;
+export let Visualizer = function(context,urlList,callBack){
+	 this.context = context;
+	 this.urlList = urlList;
+	 this.bufferList = new Array();
+	 this.loadCount = 0;
 	 //this.init();
 }
 
 Visualizer.prototype = {
 	  constructor: Visualizer,
-	  init: function(){
-           this.prepare();
-           this.start();
-	  },
-	  load: function(url,fun){
-         var xhr = new XMLHttpRequest();
+	  load: function(url,index,fun){
+         var that = this;
+         var xhr = new XMLHttpRequest();         
          xhr.abort();
          xhr.open('GET',url,false);
          xhr.responseType = 'arraybuffer';
 
          xhr.onload = function(){
-               fun && fun.call(xhr.response);
+               //fun && fun.call(xhr.response);
+               that.context.decodeAudioData(xhr.response,function(buffer){
+                    if(!buffer){
+                         console.log('error decoding file data:' + url);
+                         return;
+                    }
+
+                    that.bufferList[index] = buffer;
+                    if(++that.loadCount == that.urlList.length){
+                           that.onload(that.bufferList);
+                    }
+               },function(error){
+               	     console.error('decodeAudioData error', error)
+               })
+
+         }
+
+         xhr.onerror = function(){
+         	  console.log('XHR error')
          }
 
          xhr.send();
 
+	  },
+	  play: function(){
+	  	  var that = this;
+	  	  for(let i=0;i<this.urlList.length;++i){
+                  this.load(this.urlList[i],i);
+	  	  }
 	  },
 	  prepare: function(){
 	  	  window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext;
