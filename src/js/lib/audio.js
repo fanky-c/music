@@ -256,12 +256,31 @@ const loadMusic = (i) => {
            ['http://localhost:9998/file/Mika - Relax, Take It Easy.mp3'],
            function(bufferList,context){
 				 var source = context.createBufferSource();
+				 var analyser = context.createAnalyser();
+				 var musicArray = [];
+		         
+		         console.log(analyser)                  
+                 
+                 //播放
 		             source.buffer = bufferList[0];
 		             source.connect(context.destination);
-		             source.start(0);           	
+		             source.start(0);
+
+		        //分析
+		         source.connect(analyser);
+		         musicArray = new Uint8Array(analyser.frequencyBinCount);
+		         console.log(musicArray);
+				//  function v() {
+				// 	analyser.getByteFrequencyData(musicArray);
+				// 	requestAnimationFrame(v);
+
+				//  }
+
+				// requestAnimationFrame(v);
+
            }
 	 	);	 
-	 //visualizer.play();	       
+	 visualizer.play();	       
 	
 }
 
