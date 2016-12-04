@@ -147,65 +147,13 @@ export const renderInit = () => {
      window.onresize = init;	  
 }
 
-/**
- * [ac description]
- * @type {[type]}
- */
 
-//创建音频环境
-// var ac = new (window.AudioContext ||window.webkitAudioContext || window.mozAudioContext)();
-
-// //控制音量的GainNode
-// var gainNode = ac[ac.createGain ? "createGain" : "createGainNode"]();
-
-// //音频分析对象
-// var analyser = ac.createAnalyser();
-
-// analyser.connect(gainNode);
-
-// gainNode.connect(ac.destination);
 
 // //Android和苹果设备则设置音乐片段为16
 // var SIZE = 32; //音乐片段数
 // isMobile && (SIZE = 16);
 
-/**
- * [解码]
- * @param  {[type]} arraybuffer [description]
- * @param  {[type]} fun         [description]
- * @return {[type]}             [description]
- */
-// const decode = (arraybuffer,fun) => {
-// 		 ac.decodeAudioData(arraybuffer, function(buffer){
-// 			var bufferSourceNode = ac.createBufferSource();
-// 			bufferSourceNode.buffer = buffer;
-// 			fun.call(bufferSourceNode);
-// 		},function(err){
-// 			console.log(err);
-// 		})	  
-// }
-/**
- * [视频可视化]
- * @param  {[type]} mv [description]
- * @return {[type]}    [description]
- */
-// export const visualize = (mv) => {
-// 		mv.analyser.fftSize = SIZE * 2;
-// 		var arr = new Uint8Array(mv.analyser.frequencyBinCount);
 
-// 		var requestAnimationFrame = window.requestAnimationFrame || 
-// 									window.webkitRequestAnimationFrame || 
-// 									window.oRequestAnimationFrame || 
-// 									window.mzRequestAnimationFrame;
-// 		function v(){
-// 			mv.analyser.getByteFrequencyData(arr);
-// 			//将分析得到的音频数据传递给mv.visualizer方法可视化
-// 			mv.visualizer.call(arr);
-// 			requestAnimationFrame(v);
-// 		}
-
-// 		 requestAnimationFrame(v);	  
-// }
 
 
 /**
@@ -220,11 +168,13 @@ export let Visualizer = function(urlList,callBack){
 	 this.callBack = callBack;
 	 this.bufferList = new Array();
 	 this.loadCount = 0;
-	 //this.init();
 }
 
 Visualizer.prototype = {
 	  constructor: Visualizer,
+	  init: function(){
+
+	  },
 	  load: function(url,index){
          var that = this;
          var context = that.context;
@@ -262,88 +212,39 @@ Visualizer.prototype = {
 	  	  for(let i=0;i<this.urlList.length;++i){
                   this.load(this.urlList[i],i);
 	  	  }
-	  },
-	  prepare: function(){
-	  	  window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext;
-	  	  window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame;
-	  	  window.cancelAnimationFrame = window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame || window.msCancelAnimationFrame;
-		  try {
-				this.audioContext = new AudioContext();
-			} catch (e) {
-				console.log('!Your browser does not support AudioContext',e);
-		  }
-	  },
-	  start: function(){
-	  	   var that = this;
-	  	   var file = this.file;
-	  	   var fr = new FileReader();
-	  	   fr.onload = function(e){
-	  	   	    var fileResult = e.target.result;
-	  	   	    var audioContext = that.audioContext;
-	  	   	    if(!audioContext){
-                    return null;
-	  	   	    }
-	  	   	    audioContext.decodeAudioData(fileResult,function(buffer){
-                      console.log('decode successfully start Visualizer');
-                      that._visualizer(audioContext,buffer)
-	  	   	    },function(e){
-	  	   	    	  console.log('decode Fail',e)
-	  	   	    })
-	  	   }
+	  }	  
 
-	  	  fr.onerror = function(e){
-	  	  	   console.log('read file fail')   
-	  	  }
-
-	  	  fr.readAsArrayBuffer(file); 
-	  },
-	  _visualizer: function(audioContext,buffer){
-          var audioBufferSouceNode = audioContext.createBufferSource();
-          var analyser = audioContext.createAnalyser();
-          var that = this;
-
-          audioBufferSouceNode.connect(analyser);
-
-          analyser.connect(audioContext.destination);
-
-          audioBufferSouceNode.buffer = buffer;
-
-          if(!audioBufferSouceNode.start){
-                audioBufferSouceNode.start = audioBufferSouceNode.noteOn;
-                audioBufferSouceNode.stop = audioBufferSouceNode.noteOff;
-          }
-
-          if(this.animationId !== null){
-               cancelAnimationFrame(this.animationId);
-          }
-
-          if(this.source !== null){
-               this.source.stop(0);
-          }
-
-          audioBufferSouceNode.start(0);
-          this.status = 1;
-          this.source = audioBufferSouceNode;
-
-	      var array = new Uint8Array(analyser.frequencyBinCount);
-
-		   function v(){
-				analyser.getByteFrequencyData(array);
-				requestAnimationFrame(v);
-			}
-		
-	      requestAnimationFrame(v);
-
-          audioBufferSouceNode.onended = function(){
-          	   that._audioEnd();
-          }
-	  },
-	  _audioEnd: function(){
-        if (this.forceStop) {
-            this.forceStop = false;
-            this.status = 1;
-            return;
-        };
-           this.status = 0;  	  
-	  }
 }
+
+
+ var visualizer  = new Visualizer(
+       ['http://localhost:9998/file/Sam Tsui - Sugar.mp3'],
+       function(bufferList,context){
+	         var requestAnimationFrame = window.requestAnimationFrame || 
+								window.webkitRequestAnimationFrame || 
+								window.oRequestAnimationFrame || 
+								window.mzRequestAnimationFrame;           	
+			 var source = context.createBufferSource();
+			 var analyser = context.createAnalyser();
+			 var musicArray = [];
+	         
+	         console.log(analyser)                  
+             
+             //播放
+	             source.buffer = bufferList[0];
+	             source.connect(context.destination);
+	             source.start(0);
+
+	        //分析音频源
+	         source.connect(analyser);
+	         musicArray = new Uint8Array(analyser.frequencyBinCount);
+			 function v() {
+				analyser.getByteFrequencyData(musicArray);
+				requestAnimationFrame(v);
+			 }
+
+			requestAnimationFrame(v);
+
+       }
+ 	);	 
+ visualizer.play();	

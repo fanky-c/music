@@ -236,7 +236,6 @@ const loadMusic = (i) => {
 	//浏览器可以播放媒体数据时
 	audio.addEventListener('canplay', function(){
 		  afterLoad();
-		  console.log(this);
 		  console.log('canplay');
 	}, false);
 
@@ -250,38 +249,7 @@ const loadMusic = (i) => {
 	audio.addEventListener('canplaythrough',function(){
 		  console.log('canplaythrough');
 	 
-	},false);
-
-	 var visualizer  = new Visualizer(
-           ['http://localhost:9998/file/Mika - Relax, Take It Easy.mp3'],
-           function(bufferList,context){
-				 var source = context.createBufferSource();
-				 var analyser = context.createAnalyser();
-				 var musicArray = [];
-		         
-		         console.log(analyser)                  
-                 
-                 //播放
-		             source.buffer = bufferList[0];
-		             source.connect(context.destination);
-		             source.start(0);
-
-		        //分析
-		         source.connect(analyser);
-		         musicArray = new Uint8Array(analyser.frequencyBinCount);
-		         console.log(musicArray);
-				//  function v() {
-				// 	analyser.getByteFrequencyData(musicArray);
-				// 	requestAnimationFrame(v);
-
-				//  }
-
-				// requestAnimationFrame(v);
-
-           }
-	 	);	 
-	 visualizer.play();	       
-	
+	},false);	
 }
 
 loadMusic(currentTrack || 0);
