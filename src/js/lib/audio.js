@@ -249,14 +249,20 @@ const loadMusic = (i) => {
 	//提示视频能够不停顿地一直播放
 	audio.addEventListener('canplaythrough',function(){
 		  console.log('canplaythrough');
-	},false)       
+	 
+	},false);
+
+	 var visualizer  = new Visualizer(
+           ['http://localhost:9998/file/Mika - Relax, Take It Easy.mp3'],
+           function(bufferList,context){
+				 var source = context.createBufferSource();
+		             source.buffer = bufferList[0];
+		             source.connect(context.destination);
+		             source.start(0);           	
+           }
+	 	);	 
+	 //visualizer.play();	       
 	
-
-	// var visualizer  = new Visualizer();
-	// visualizer.load('../file/'+ item.title + '.mp3',function(){
-	// 	    alert(this)
-	// })
-
 }
 
 loadMusic(currentTrack || 0);

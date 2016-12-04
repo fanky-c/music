@@ -214,9 +214,10 @@ export const renderInit = () => {
  * @param {[type]} [varname] [description]
  */
 
-export let Visualizer = function(context,urlList,callBack){
-	 this.context = context;
+export let Visualizer = function(urlList,callBack){
+	 this.context = new (window.AudioContext || window.webkitAudioContext)();
 	 this.urlList = urlList;
+	 this.callBack = callBack;
 	 this.bufferList = new Array();
 	 this.loadCount = 0;
 	 //this.init();
@@ -224,15 +225,15 @@ export let Visualizer = function(context,urlList,callBack){
 
 Visualizer.prototype = {
 	  constructor: Visualizer,
-	  load: function(url,index,fun){
+	  load: function(url,index){
          var that = this;
+         var context = that.context;
          var xhr = new XMLHttpRequest();         
          xhr.abort();
-         xhr.open('GET',url,false);
+         xhr.open('GET',url,true);
          xhr.responseType = 'arraybuffer';
 
          xhr.onload = function(){
-               //fun && fun.call(xhr.response);
                that.context.decodeAudioData(xhr.response,function(buffer){
                     if(!buffer){
                          console.log('error decoding file data:' + url);
@@ -241,7 +242,7 @@ Visualizer.prototype = {
 
                     that.bufferList[index] = buffer;
                     if(++that.loadCount == that.urlList.length){
-                           that.onload(that.bufferList);
+                           that.callBack(that.bufferList,context);
                     }
                },function(error){
                	     console.error('decodeAudioData error', error)
