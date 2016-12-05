@@ -132,10 +132,10 @@ const init = () => {
 	canvasDot.height = canvasColumn.height = HEIGHT;
 	canvasDot.width = canvasColumn.width = WIDTH;
 	
-	 getArr(ctxColumn);
+	getArr(ctxColumn);
 	// Render(ctxColumn,'Column');
 
-	 getArr(ctxDot);
+	getArr(ctxDot);
 	// Render(ctxDot,'Dot');
 }
 
@@ -155,12 +155,13 @@ export const renderInit = () => {
  * @param {[type]} [varname] [description]
  */
 
-export let Visualizer = function(urlList,callBack){
+export const Visualizer = function(urlList,callBack){
 	 this.context = new (window.AudioContext || window.webkitAudioContext)();
 	 this.urlList = urlList;
 	 this.callBack = callBack;
 	 this.bufferList = new Array();
 	 this.loadCount = 0;
+	 this.size = SIZE || 32;
 	 this.play();
 }
 
@@ -168,7 +169,6 @@ Visualizer.prototype = {
 	  constructor: Visualizer,
 	  load: function(url,index){
          var that = this;
-         var context = that.context;
          var xhr = new XMLHttpRequest();         
          xhr.abort();
          xhr.open('GET',url,true);
@@ -183,7 +183,7 @@ Visualizer.prototype = {
 
                     that.bufferList[index] = buffer;
                     if(++that.loadCount == that.urlList.length){
-                           that.callBack(that.bufferList,context);
+                           that.callBack(that.bufferList,that.context,that.size);
                     }
                },function(error){
                	     console.error('decodeAudioData error', error)
@@ -210,52 +210,44 @@ Visualizer.prototype = {
 
  var visualizer  = new Visualizer(
        ['http://localhost:9998/file/Sam Tsui - Sugar.mp3'],
-       function(bufferList,context){        	
+       function(bufferList,context,size){        	
 			 var source = context.createBufferSource();
 			 var analyser = context.createAnalyser();
 			 var gainNode = context.createGain();
+         	 var requestAnimationFrame =
+	         	 window.requestAnimationFrame ||
+	         	 window.webkitRequestAnimationFrame ||
+	         	 window.oRequestAnimationFrame ||
+	         	 window.mzRequestAnimationFrame;			 
 			 
-             //表示context中所有音频（节点）的最终目标节点，一般是音频渲染设备，比如扬声器。
-			 source.connect(context.destination); 
+	             //表示context中所有音频（节点）的最终目标节点，一般是音频渲染设备，比如扬声器。
+				 source.connect(context.destination); 
 	                        
              
-             //播放和停止
+                 //播放和停止
 	             source.buffer = bufferList[0];  //第一首歌资源	            
 		         source.start ? source.start(0) : source.noteOn(0);  //播放
                  //source.stop ? source.stop(0) : source.noteOff(0); //停止
 	             
 
-	        //分析音频源
+	             //分析音频源
 	             //console.log('音频源',analyser)  
 		         source.connect(analyser);
-		         analyser.fftSize = SIZE * 2;
+		         analyser.fftSize = size * 2;
 		         var musicArray = new Uint8Array(analyser.frequencyBinCount);
-		         canvasAnimation(analyser,musicArray)
 		         console.log(musicArray)
+				function v() {
+					analyser.getByteFrequencyData(musicArray);
+					requestAnimationFrame(v);
+					Render(ctxDot, 'Dot', musicArray)();
+					Render(ctxColumn, 'Column', musicArray)();
+				}
 
-	       //控制音量
+				requestAnimationFrame(v);
+
+	           //控制音量
 	           //console.log('音量',gainNode)
 		       source.connect(gainNode);
 		       gainNode.gain.value = 0.1;		
        }
   );	
-
-
-
-
-         function canvasAnimation(analyser,musicArray) {
-         	var requestAnimationFrame =
-         		window.requestAnimationFrame ||
-         		window.webkitRequestAnimationFrame ||
-         		window.oRequestAnimationFrame ||
-         		window.mzRequestAnimationFrame;
-
-         	function v() {
-         		analyser.getByteFrequencyData(musicArray);
-         		requestAnimationFrame(v);
-         		Render(ctxDot, 'Dot',musicArray)();
-         		Render(ctxColumn, 'Column',musicArray)();
-         	}
-
-         	requestAnimationFrame(v);
-         }

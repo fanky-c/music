@@ -237,6 +237,7 @@ const loadMusic = (i) => {
 	audio.addEventListener('canplay', function(){
 		  afterLoad();
 		  console.log('canplay');
+
 	}, false);
 
 	//当浏览器可以在不因缓冲而停顿的情况下播放时
