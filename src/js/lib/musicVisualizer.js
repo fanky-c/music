@@ -55,8 +55,8 @@ const getArr = (ctx) => {
 	ARR.length = 0;
 	ARR.linearGradient = ctx.createLinearGradient(0, HEIGHT, 0, 0);
 	ARR.linearGradient.addColorStop(0, 'green');
-	ARR.linearGradient.addColorStop(0.5, '#ff0');
-	ARR.linearGradient.addColorStop(1, '#f00');
+	ARR.linearGradient.addColorStop(0.5, '#3ebaf0');
+	ARR.linearGradient.addColorStop(1, '#ffd257');
 
 	for (var i = 0; i < SIZE; i++) {
 		var x = random(0, WIDTH),
@@ -183,7 +183,7 @@ Visualizer.prototype = {
 
                     that.bufferList[index] = buffer;
                     if(++that.loadCount == that.urlList.length){
-                           that.callBack(that.bufferList,that.context,that.size);
+                           that.callBack && that.callBack(that.bufferList,that.context,that.size);
                     }
                },function(error){
                	     console.error('decodeAudioData error', error)
