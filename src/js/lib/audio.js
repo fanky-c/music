@@ -49,7 +49,7 @@ for(let i=0; i<playlist.length; ++i){
 const play = () => {
 	 audio.play();
 	 $('.playback').addClass('playing');
-	 //VisualizerClass.start(VisualizerClass.time);  //开启可视化
+	 //VisualizerClass.start();  //开启可视化
 	 timeout = setInterval(updateAudioProgress, 500);
 	 isPlaying = true;
 }
@@ -57,7 +57,7 @@ const play = () => {
 const pause = () => {
 	  audio.pause();
 	  $('.playback').removeClass('playing');
-	  VisualizerClass.stop(VisualizerClass.time);  //暂停可视化
+	  VisualizerClass.stop();  //暂停可视化
 	  updateAudioProgress && clearInterval(updateAudioProgress);
 	  isPlaying = false;
 }
@@ -206,7 +206,7 @@ const loadMusic = (i) => {
 	$('title').text(item.title + " - " + item.artist);
 	audio = newaudio[0];
 	audio.volume = $('.mute').hasClass('enable') ? 0 : volume;
-
+     
 	 VisualizerClass  = new Visualizer(
 	       ['../file/'+ item.title +'.mp3']
 	  );

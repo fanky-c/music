@@ -191,6 +191,7 @@ export const Visualizer = function(urlList,callBack){
 	 this.init();
 }
 
+
 Visualizer.prototype = {
 	  constructor: Visualizer,
 	  init: function(){	       
@@ -245,7 +246,7 @@ Visualizer.prototype = {
                     }
                     that.bufferList[index] = buffer;
                     if(++that.loadCount == that.urlList.length){                        
-	                       that.start(that.time);
+	                       that.start(0);
 	                       that.animation(that.bufferList);
 	                       that.callBack && that.callBack.apply(that);   
                     }
@@ -263,10 +264,10 @@ Visualizer.prototype = {
 
 	  },
 	  start: function(time){
-         this.source && (this.source.start ? this.source.start(time) : this.source.noteOn(time));  //播放
+         this.source && (this.source.start ? this.source.start(time || 0) : this.source.noteOn(time || 0));  //播放
 	  },
-	  stop: function(time){
-         this.source && (this.source.stop ? this.source.stop(time) : this.source.noteOff(time)); //停止
+	  stop: function(time){     
+         this.source && (this.source.stop ? this.source.stop(time || 0) : this.source.noteOff(time || 0)); //停止
 	  },
 	  changeVolume: function(num){
 	  	  this.gainNode.gain.value = num;
