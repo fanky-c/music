@@ -180,6 +180,8 @@ export const Visualizer = function(urlList,callBack){
 
      this.source.connect(this.gainNode);
 
+     this.currentTime = 0;
+
 
 	 this.urlList = urlList;
 	 this.callBack = callBack;
@@ -215,10 +217,9 @@ Visualizer.prototype = {
 
              musicArray = new Uint8Array(this.analyser.frequencyBinCount);
 
-             //console.log(bufferList[0])
-
 			function v() {
 				that.analyser.getByteFrequencyData(musicArray);
+				that.currentTime = that.context.currentTime;
 				requestAnimationFrame(v);
 				Render(ctxDot, 'Dot', musicArray)();
 				Render(ctxColumn, 'Column', musicArray)();
@@ -244,7 +245,7 @@ Visualizer.prototype = {
                     }
                     that.bufferList[index] = buffer;
                     if(++that.loadCount == that.urlList.length){                        
-	                       that.start();
+	                       that.start(that.time);
 	                       that.animation(that.bufferList);
 	                       that.callBack && that.callBack.apply(that);   
                     }
@@ -261,12 +262,11 @@ Visualizer.prototype = {
          xhr.send();
 
 	  },
-	  start: function(){
-	  	 alert('fff')
-         this.source && (this.source.start ? this.source.start(0) : this.source.noteOn(0));  //播放
+	  start: function(time){
+         this.source && (this.source.start ? this.source.start(time) : this.source.noteOn(time));  //播放
 	  },
-	  stop: function(){
-         this.source && (this.source.stop ? this.source.stop(0) : this.source.noteOff(0)); //停止
+	  stop: function(time){
+         this.source && (this.source.stop ? this.source.stop(time) : this.source.noteOff(time)); //停止
 	  },
 	  changeVolume: function(num){
 	  	  this.gainNode.gain.value = num;
