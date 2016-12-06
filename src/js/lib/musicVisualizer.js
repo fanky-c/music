@@ -174,8 +174,7 @@ export const Visualizer = function(urlList,callBack){
     
      this.source.connect(this.analyser);
   
-	  
-    
+
      //控制音量
      this.gainNode = this.context.createGain();
 
@@ -216,7 +215,7 @@ Visualizer.prototype = {
 
              musicArray = new Uint8Array(this.analyser.frequencyBinCount);
 
-             				console.log(musicArray)
+             //console.log(bufferList[0])
 
 			function v() {
 				that.analyser.getByteFrequencyData(musicArray);
@@ -234,6 +233,8 @@ Visualizer.prototype = {
          xhr.abort();
          xhr.open('GET',url,true);
          xhr.responseType = 'arraybuffer';
+         
+         console.log('当前请求路径:'+url);
 
          xhr.onload = function(){
                that.context.decodeAudioData(xhr.response,function(buffer){
@@ -242,10 +243,10 @@ Visualizer.prototype = {
                          return;
                     }
                     that.bufferList[index] = buffer;
-                    if(++that.loadCount == that.urlList.length){
-                           //that.callBack && that.callBack(that.bufferList,that.context,that.size);                           
-	                       //that.start();
-	                       that.animation(that.bufferList)
+                    if(++that.loadCount == that.urlList.length){                        
+	                       that.start();
+	                       that.animation(that.bufferList);
+	                       that.callBack && that.callBack.apply(that);   
                     }
                },function(error){
                	     console.error('decodeAudioData error', error)
@@ -261,61 +262,14 @@ Visualizer.prototype = {
 
 	  },
 	  start: function(){
-         this.source.start ? this.source.start(0) : this.source.noteOn(0);  //播放
+	  	 alert('fff')
+         this.source && (this.source.start ? this.source.start(0) : this.source.noteOn(0));  //播放
 	  },
 	  stop: function(){
-         this.source.stop ? this.source.stop(0) : this.source.noteOff(0); //停止
+         this.source && (this.source.stop ? this.source.stop(0) : this.source.noteOff(0)); //停止
 	  },
 	  changeVolume: function(num){
 	  	  this.gainNode.gain.value = num;
 	  }	  
 
-}
-
-
- var visualizer  = new Visualizer(
-       ['http://localhost:9998/file/Sam Tsui - Sugar.mp3']
-  );	
-
-
-
-    //     function(bufferList,context,size){        	
-			 // var source = context.createBufferSource();
-			 // var analyser = context.createAnalyser();
-			 // var gainNode = context.createGain();
-    //      	 var requestAnimationFrame =
-	   //       	 window.requestAnimationFrame ||
-	   //       	 window.webkitRequestAnimationFrame ||
-	   //       	 window.oRequestAnimationFrame ||
-	   //       	 window.mzRequestAnimationFrame;			 
-			 
-	   //           //表示context中所有音频（节点）的最终目标节点，一般是音频渲染设备，比如扬声器。
-				//  source.connect(context.destination); 
-	                        
-             
-    //              //播放和停止
-	   //           source.buffer = bufferList[0];  //第一首歌资源	            
-		  //        //source.start ? source.start(0) : source.noteOn(0);  //播放
-    //              //source.stop ? source.stop(0) : source.noteOff(0); //停止
-	             
-
-	   //           //分析音频源
-	   //           //console.log('音频源',analyser)  
-		  //        source.connect(analyser);
-		  //        analyser.fftSize = size * 2;
-		  //        var musicArray = new Uint8Array(analyser.frequencyBinCount);
-		  //        console.log(musicArray)
-				// function v() {
-				// 	analyser.getByteFrequencyData(musicArray);
-				// 	requestAnimationFrame(v);
-				// 	Render(ctxDot, 'Dot', musicArray)();
-				// 	Render(ctxColumn, 'Column', musicArray)();
-				// }
-
-				// requestAnimationFrame(v);
-
-	   //         //控制音量
-	   //         //console.log('音量',gainNode)
-		  //      source.connect(gainNode);
-		  //      gainNode.gain.value = 0.1;		
-    //    }
+}	

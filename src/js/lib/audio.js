@@ -11,6 +11,8 @@ let time = new Date(),
   	track = null,
   	audio, timeout, isPlaying, playCounts;
 
+let VisualizerClass = null;
+
 /**
  * 随即切换背景图
  */
@@ -47,6 +49,7 @@ for(let i=0; i<playlist.length; ++i){
 const play = () => {
 	 audio.play();
 	 $('.playback').addClass('playing');
+	 VisualizerClass.start();  //开启可视化
 	 timeout = setInterval(updateAudioProgress, 500);
 	 isPlaying = true;
 }
@@ -54,6 +57,7 @@ const play = () => {
 const pause = () => {
 	  audio.pause();
 	  $('.playback').removeClass('playing');
+	  VisualizerClass.stop();  //暂停可视化
 	  updateAudioProgress && clearInterval(updateAudioProgress);
 	  isPlaying = false;
 }
@@ -202,6 +206,11 @@ const loadMusic = (i) => {
 	$('title').text(item.title + " - " + item.artist);
 	audio = newaudio[0];
 	audio.volume = $('.mute').hasClass('enable') ? 0 : volume;
+
+	 VisualizerClass  = new Visualizer(
+	       ['../file/'+ item.title +'.mp3']
+	  );
+
     
     //提示音频的元数据已加载
 	audio.addEventListener('loadstart',function(){
