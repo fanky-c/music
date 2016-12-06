@@ -17,11 +17,11 @@ var isMobile = false;
 var isApple = false;
 
 
-//Android和苹果设备则设置音乐片段为16
-var SIZE = 32; //音乐片段数
-isMobile && (SIZE = 16);
-
-
+/**
+ * [判断客户端UA]
+ * @param  {[type]} ( [description]
+ * @return {[type]}   [description]
+ */
 (() => {
 	var u = window.navigator.userAgent;
 	var m = /(Android)|(iPhone)|(iPad)|(iPod)/i;
@@ -34,6 +34,10 @@ isMobile && (SIZE = 16);
 	}
 })();
 
+
+//Android和苹果设备则设置音乐片段为16
+var SIZE = 32; //音乐片段数
+isMobile && (SIZE = 16);
 
 /**
  * [random 随机值]
@@ -150,23 +154,80 @@ export const renderInit = () => {
 
 
 /**
- * @author [author]
+ * @author [fanky_c]
  * @description [description]
  * @param {[type]} [varname] [description]
  */
 
 export const Visualizer = function(urlList,callBack){
+	 //创建AudioContext环境
 	 this.context = new (window.AudioContext || window.webkitAudioContext)();
+	 
+	 //创建一个新的AudioBufferSourceNode接口
+	 this.source = this.context.createBufferSource();
+     
+     //表示context中所有音频（节点）的最终目标节点，一般是音频渲染设备，比如扬声器。
+     this.source.connect(this.context.destination);
+    
+     //分析音频源
+     this.analyser = this.context.createAnalyser();
+    
+     this.source.connect(this.analyser);
+  
+	  
+    
+     //控制音量
+     this.gainNode = this.context.createGain();
+
+     this.source.connect(this.gainNode);
+
+
 	 this.urlList = urlList;
 	 this.callBack = callBack;
 	 this.bufferList = new Array();
 	 this.loadCount = 0;
 	 this.size = SIZE || 32;
-	 this.play();
+	 this.init();
 }
 
 Visualizer.prototype = {
 	  constructor: Visualizer,
+	  init: function(){	       
+	        this.play();
+	  },
+	  play: function(){
+	  	  var that = this;
+	  	  for(let i=0;i<this.urlList.length;++i){
+                  this.load(this.urlList[i],i);
+	  	  }
+	  },
+	  animation: function(bufferList){
+     	 var requestAnimationFrame =
+         	 window.requestAnimationFrame ||
+         	 window.webkitRequestAnimationFrame ||
+         	 window.oRequestAnimationFrame ||
+         	 window.mzRequestAnimationFrame;
+        var  musicArray = [];
+        var  that = this; 	 
+             
+             this.source.buffer = this.bufferList[0];
+
+             this.analyser.fftSize = this.size * 2;
+
+             musicArray = new Uint8Array(this.analyser.frequencyBinCount);
+
+             				console.log(musicArray)
+
+			function v() {
+				that.analyser.getByteFrequencyData(musicArray);
+				requestAnimationFrame(v);
+				Render(ctxDot, 'Dot', musicArray)();
+				Render(ctxColumn, 'Column', musicArray)();
+			}
+
+			requestAnimationFrame(v);
+
+	  },	  
 	  load: function(url,index){
          var that = this;
          var xhr = new XMLHttpRequest();         
@@ -180,10 +241,11 @@ Visualizer.prototype = {
                          console.log('error decoding file data:' + url);
                          return;
                     }
-
                     that.bufferList[index] = buffer;
                     if(++that.loadCount == that.urlList.length){
-                           that.callBack && that.callBack(that.bufferList,that.context,that.size);
+                           //that.callBack && that.callBack(that.bufferList,that.context,that.size);                           
+	                       //that.start();
+	                       that.animation(that.bufferList)
                     }
                },function(error){
                	     console.error('decodeAudioData error', error)
@@ -198,56 +260,62 @@ Visualizer.prototype = {
          xhr.send();
 
 	  },
-	  play: function(){
-	  	  var that = this;
-	  	  for(let i=0;i<this.urlList.length;++i){
-                  this.load(this.urlList[i],i);
-	  	  }
+	  start: function(){
+         this.source.start ? this.source.start(0) : this.source.noteOn(0);  //播放
+	  },
+	  stop: function(){
+         this.source.stop ? this.source.stop(0) : this.source.noteOff(0); //停止
+	  },
+	  changeVolume: function(num){
+	  	  this.gainNode.gain.value = num;
 	  }	  
 
 }
 
 
  var visualizer  = new Visualizer(
-       ['http://localhost:9998/file/Sam Tsui - Sugar.mp3'],
-       function(bufferList,context,size){        	
-			 var source = context.createBufferSource();
-			 var analyser = context.createAnalyser();
-			 var gainNode = context.createGain();
-         	 var requestAnimationFrame =
-	         	 window.requestAnimationFrame ||
-	         	 window.webkitRequestAnimationFrame ||
-	         	 window.oRequestAnimationFrame ||
-	         	 window.mzRequestAnimationFrame;			 
+       ['http://localhost:9998/file/Sam Tsui - Sugar.mp3']
+  );	
+
+
+
+    //     function(bufferList,context,size){        	
+			 // var source = context.createBufferSource();
+			 // var analyser = context.createAnalyser();
+			 // var gainNode = context.createGain();
+    //      	 var requestAnimationFrame =
+	   //       	 window.requestAnimationFrame ||
+	   //       	 window.webkitRequestAnimationFrame ||
+	   //       	 window.oRequestAnimationFrame ||
+	   //       	 window.mzRequestAnimationFrame;			 
 			 
-	             //表示context中所有音频（节点）的最终目标节点，一般是音频渲染设备，比如扬声器。
-				 source.connect(context.destination); 
+	   //           //表示context中所有音频（节点）的最终目标节点，一般是音频渲染设备，比如扬声器。
+				//  source.connect(context.destination); 
 	                        
              
-                 //播放和停止
-	             source.buffer = bufferList[0];  //第一首歌资源	            
-		         source.start ? source.start(0) : source.noteOn(0);  //播放
-                 //source.stop ? source.stop(0) : source.noteOff(0); //停止
+    //              //播放和停止
+	   //           source.buffer = bufferList[0];  //第一首歌资源	            
+		  //        //source.start ? source.start(0) : source.noteOn(0);  //播放
+    //              //source.stop ? source.stop(0) : source.noteOff(0); //停止
 	             
 
-	             //分析音频源
-	             //console.log('音频源',analyser)  
-		         source.connect(analyser);
-		         analyser.fftSize = size * 2;
-		         var musicArray = new Uint8Array(analyser.frequencyBinCount);
-		         console.log(musicArray)
-				function v() {
-					analyser.getByteFrequencyData(musicArray);
-					requestAnimationFrame(v);
-					Render(ctxDot, 'Dot', musicArray)();
-					Render(ctxColumn, 'Column', musicArray)();
-				}
+	   //           //分析音频源
+	   //           //console.log('音频源',analyser)  
+		  //        source.connect(analyser);
+		  //        analyser.fftSize = size * 2;
+		  //        var musicArray = new Uint8Array(analyser.frequencyBinCount);
+		  //        console.log(musicArray)
+				// function v() {
+				// 	analyser.getByteFrequencyData(musicArray);
+				// 	requestAnimationFrame(v);
+				// 	Render(ctxDot, 'Dot', musicArray)();
+				// 	Render(ctxColumn, 'Column', musicArray)();
+				// }
 
-				requestAnimationFrame(v);
+				// requestAnimationFrame(v);
 
-	           //控制音量
-	           //console.log('音量',gainNode)
-		       source.connect(gainNode);
-		       gainNode.gain.value = 0.1;		
-       }
-  );	
+	   //         //控制音量
+	   //         //console.log('音量',gainNode)
+		  //      source.connect(gainNode);
+		  //      gainNode.gain.value = 0.1;		
+    //    }
