@@ -188,6 +188,7 @@ export const Visualizer = function(urlList,callBack){
 	 this.bufferList = new Array();
 	 this.loadCount = 0;
 	 this.size = SIZE || 32;
+	 this.RafTimes = null;
 	 this.init();
 }
 
@@ -196,6 +197,7 @@ Visualizer.prototype = {
 	  constructor: Visualizer,
 	  init: function(){	       
 	        this.play();
+	        this.changeVolume(0);
 	  },
 	  play: function(){
 	  	  var that = this;
@@ -218,15 +220,17 @@ Visualizer.prototype = {
 
              musicArray = new Uint8Array(this.analyser.frequencyBinCount);
 
+             that.RafTimes && cancelAnimationFrame(that.RafTimes) 
+
 			function v() {
 				that.analyser.getByteFrequencyData(musicArray);
 				that.currentTime = that.context.currentTime;
-				requestAnimationFrame(v);
+				that.RafTimes = requestAnimationFrame(v);
 				Render(ctxDot, 'Dot', musicArray)();
 				Render(ctxColumn, 'Column', musicArray)();
 			}
 
-			requestAnimationFrame(v);
+			that.RafTimes = requestAnimationFrame(v);
 
 	  },	  
 	  load: function(url,index){
@@ -246,7 +250,8 @@ Visualizer.prototype = {
                     }
                     that.bufferList[index] = buffer;
                     if(++that.loadCount == that.urlList.length){                        
-	                       that.start(0);
+	                       //that.start(0);
+	                       that.source.start ? that.source.start(0) : that.source.noteOn(0);
 	                       that.animation(that.bufferList);
 	                       that.callBack && that.callBack.apply(that);   
                     }
@@ -263,14 +268,27 @@ Visualizer.prototype = {
          xhr.send();
 
 	  },
-	  start: function(time){
-         this.source && (this.source.start ? this.source.start(time || 0) : this.source.noteOn(time || 0));  //播放
+	  start: function(){
+	  	console.log(this.context.currentTime);
+        //this.source && (this.source.start ? this.source.start(this.context.currentTime) : this.source.noteOn(this.context.currentTime));  //播放
 	  },
-	  stop: function(time){     
-         this.source && (this.source.stop ? this.source.stop(time || 0) : this.source.noteOff(time || 0)); //停止
+	  stop: function(){
+		if (!this.source.stop) {
+			this.source.stop = this.source.noteOff;
+		}
+		this.source.stop(0);
+	  	//this.source && (this.source.stop ? this.source.stop(0) : this.source.noteOff(0));  //停止
+	  },
+	  pause: function(){ 
+		if (!this.source.stop) {
+			this.source.stop = this.source.noteOff;
+		}
+		this.source.stop(this.context.currentTime);	   
+         //this.source && (this.source.stop ? this.source.stop(this.context.currentTime || 0) : this.source.noteOff(this.context.currentTime || 0)); 
 	  },
 	  changeVolume: function(num){
 	  	  this.gainNode.gain.value = num;
+	  	  console.log(this.gainNode.gain)
 	  }	  
 
 }	

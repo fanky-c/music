@@ -12,6 +12,7 @@ let time = new Date(),
   	audio, timeout, isPlaying, playCounts;
 
 let VisualizerClass = null;
+let currentMusicUrl = '';;
 
 /**
  * 随即切换背景图
@@ -49,7 +50,14 @@ for(let i=0; i<playlist.length; ++i){
 const play = () => {
 	 audio.play();
 	 $('.playback').addClass('playing');
-	 //VisualizerClass.start();  //开启可视化
+	 //VisualizerClass && VisualizerClass.start();
+	 VisualizerClass && VisualizerClass.stop();
+	 VisualizerClass  = new Visualizer(
+	       currentMusicUrl,
+	       function(){
+	       	    //console.log(this);
+	       }
+	  ); 
 	 timeout = setInterval(updateAudioProgress, 500);
 	 isPlaying = true;
 }
@@ -57,7 +65,7 @@ const play = () => {
 const pause = () => {
 	  audio.pause();
 	  $('.playback').removeClass('playing');
-	  VisualizerClass.stop();  //暂停可视化
+	  VisualizerClass && VisualizerClass.pause();  //暂停可视化
 	  updateAudioProgress && clearInterval(updateAudioProgress);
 	  isPlaying = false;
 }
@@ -206,58 +214,55 @@ const loadMusic = (i) => {
 	$('title').text(item.title + " - " + item.artist);
 	audio = newaudio[0];
 	audio.volume = $('.mute').hasClass('enable') ? 0 : volume;
-     VisualizerClass && VisualizerClass.stop();
-	 VisualizerClass  = new Visualizer(
-	       ['../file/'+ item.title +'.mp3']
-	  );
+	currentMusicUrl = ['../file/'+ item.title +'.mp3'];	
 
     
     //提示音频的元数据已加载
 	audio.addEventListener('loadstart',function(){
-		console.log('loadstart'); 
+		//console.log('loadstart'); 
 	},false)
 
 	//更改声频、视频的时长时
 	audio.addEventListener('durationchange', function(){
 		  beforeLoad(this);
-		  console.log('durationchange');
+		  //console.log('durationchange');
 	}, false); 
 
 	
 	//提示音频的元数据已加载
 	audio.addEventListener('loadedmetadata', function(){
 		   afterLoad();
-		   console.log('loadedmetadata');
+		   //console.log('loadedmetadata');
 	}, false);
     
     //提示当前帧的数据是可用的
 	audio.addEventListener('loadeddata',function(){
-		  console.log('loadeddata');
+		  //console.log('loadeddata');
 	},false)    
 	
 	//浏览器正在下载媒体数据时
 	audio.addEventListener('progress', function(){
 		  beforeLoad(this);
-		  console.log('progress');
+		  //console.log('progress');
 	}, false);    
 	
 	
 	//浏览器可以播放媒体数据时
 	audio.addEventListener('canplay', function(){
 		  afterLoad();
-		  console.log('canplay');
+		  //console.log('canplay');
 
 	}, false);
 
 	//当浏览器可以在不因缓冲而停顿的情况下播放时
 	audio.addEventListener('ended', function(){
 		  ended();
-		  console.log('ended');
+		  //console.log('ended');
 	}, false);
 
 	//提示视频能够不停顿地一直播放
 	audio.addEventListener('canplaythrough',function(){
-		  console.log('canplaythrough');
+		  //console.log('canplaythrough');
 	 
 	},false);	
 }
