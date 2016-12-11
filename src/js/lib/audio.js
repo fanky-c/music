@@ -206,7 +206,7 @@ const loadMusic = (i) => {
 	$('title').text(item.title + " - " + item.artist);
 	audio = newaudio[0];
 	audio.volume = $('.mute').hasClass('enable') ? 0 : volume;
-     
+     VisualizerClass && VisualizerClass.stop();
 	 VisualizerClass  = new Visualizer(
 	       ['../file/'+ item.title +'.mp3']
 	  );
