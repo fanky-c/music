@@ -50,14 +50,17 @@ for(let i=0; i<playlist.length; ++i){
 const play = () => {
 	 audio.play();
 	 $('.playback').addClass('playing');
-	 //VisualizerClass && VisualizerClass.start();
-	 VisualizerClass && VisualizerClass.stop();
-	 VisualizerClass  = new Visualizer(
-	       currentMusicUrl,
-	       function(){
-	       	    //console.log(this);
-	       }
-	  ); 
+	 try{
+	      VisualizerClass && VisualizerClass.stop();
+		  VisualizerClass  = new Visualizer(
+		       currentMusicUrl,
+		       function(){
+		       	    //console.log(this);
+		       }
+		   ); 	      
+	 }catch(e){
+          console.log(e);
+	 }
 	 timeout = setInterval(updateAudioProgress, 500);
 	 isPlaying = true;
 }
