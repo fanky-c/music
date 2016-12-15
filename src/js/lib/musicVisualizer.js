@@ -179,6 +179,8 @@ export const Visualizer = function(urlList,callBack){
      this.gainNode = this.context.createGain();
 
      this.source.connect(this.gainNode);
+     
+     this.source.connect(this.context.destination);
 
      this.currentTime = 0;
 
