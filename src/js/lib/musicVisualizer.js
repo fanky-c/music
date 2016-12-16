@@ -181,10 +181,11 @@ export const Visualizer = function(urlList,callBack){
      this.source.connect(this.gainNode);
      
      this.source.connect(this.context.destination);
+     
+     this.gainNode.gain.value = 0;
+     console.log('ww3',this.gainNode.gain);
 
      this.currentTime = 0;
-
-
 	 this.urlList = urlList;
 	 this.callBack = callBack;
 	 this.bufferList = new Array();
@@ -199,7 +200,6 @@ Visualizer.prototype = {
 	  constructor: Visualizer,
 	  init: function(){	       
 	        this.play();
-	        this.changeVolume(0);
 	  },
 	  play: function(){
 	  	  var that = this;
@@ -255,7 +255,7 @@ Visualizer.prototype = {
 	                       //that.start(0);
 	                       that.source.start ? that.source.start(0) : that.source.noteOn(0);
 	                       that.animation(that.bufferList);
-	                       that.callBack && that.callBack.apply(that);   
+	                       that.callBack && that.callBack.apply(that);
                     }
                },function(error){
                	     console.error('decodeAudioData error', error)
@@ -270,27 +270,27 @@ Visualizer.prototype = {
          xhr.send();
 
 	  },
-	  start: function(){
-	  	console.log(this.context.currentTime);
-        //this.source && (this.source.start ? this.source.start(this.context.currentTime) : this.source.noteOn(this.context.currentTime));  //播放
+	  replay: function(){  //重新播放
+        this.source && (this.source.start ? this.source.start(this.context.currentTime) : this.source.noteOn(this.context.currentTime));  
+	    console.log(this.context.currentTime);
 	  },
-	  stop: function(){
-		if (!this.source.stop) {
-			this.source.stop = this.source.noteOff;
-		}
-		this.source.stop(0);
-	  	//this.source && (this.source.stop ? this.source.stop(0) : this.source.noteOff(0));  //停止
-	  },
-	  pause: function(){ 
+	  pause: function(){ //暂停播放  
 		if (!this.source.stop) {
 			this.source.stop = this.source.noteOff;
 		}
 		this.source.stop(this.context.currentTime);	   
          //this.source && (this.source.stop ? this.source.stop(this.context.currentTime || 0) : this.source.noteOff(this.context.currentTime || 0)); 
 	  },
+	  stop: function(){  //停止播放
+		if (!this.source.stop) {
+			this.source.stop = this.source.noteOff;
+		}
+		this.source.stop(0);
+	  	//this.source && (this.source.stop ? this.source.stop(0) : this.source.noteOff(0));
+	  },	  
 	  changeVolume: function(num){
 	  	  this.gainNode.gain.value = num;
-	  	  console.log(this.gainNode.gain)
+	  	  console.log(this.gainNode.gain);
 	  }	  
 
 }	

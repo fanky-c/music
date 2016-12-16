@@ -43,6 +43,18 @@ for(let i=0; i<playlist.length; ++i){
 }
 
 
+	 try{
+	      VisualizerClass && VisualizerClass.stop();
+		  VisualizerClass  = new Visualizer(
+		       ['../file/Sam Tsui - Sugar.mp3'],
+		       function(){
+		       	    //console.log(this);
+		       }
+		   ); 	      
+	 }catch(e){
+          console.log(e);
+	 }
+
 
 /**
  *  操作音乐播放器
@@ -270,7 +282,7 @@ const loadMusic = (i) => {
 	},false);	
 }
 
-loadMusic(currentTrack || 0);
+//loadMusic(currentTrack || 0);
 
 
 //暂停播放
