@@ -165,9 +165,6 @@ export const Visualizer = function(urlList,callBack){
 	 
 	 //创建一个新的AudioBufferSourceNode接口
 	 this.source = this.context.createBufferSource();
-     
-     //表示context中所有音频（节点）的最终目标节点，一般是音频渲染设备，比如扬声器。
-     this.source.connect(this.context.destination);
     
      //分析音频源
      this.analyser = this.context.createAnalyser();
@@ -179,7 +176,8 @@ export const Visualizer = function(urlList,callBack){
      this.gainNode = this.context.createGain();
 
      this.source.connect(this.gainNode);
-     
+
+     //表示context中所有音频（节点）的最终目标节点，一般是音频渲染设备，比如扬声器。     
      this.source.connect(this.context.destination);
      
      this.gainNode.gain.value = 0;
@@ -191,10 +189,10 @@ export const Visualizer = function(urlList,callBack){
 	 this.bufferList = new Array();
 	 this.loadCount = 0;
 	 this.size = SIZE || 32;
-	 this.RafTimes = null;
 	 this.init();
 }
 
+Visualizer.timer = null;  //类属性
 
 Visualizer.prototype = {
 	  constructor: Visualizer,
@@ -214,7 +212,8 @@ Visualizer.prototype = {
          	 window.oRequestAnimationFrame ||
          	 window.mzRequestAnimationFrame;
         var  musicArray = [];
-        var  that = this; 	 
+        var  that = this;
+        var  timer = null; 	 
              
              this.source.buffer = this.bufferList[0];
 
@@ -222,7 +221,7 @@ Visualizer.prototype = {
 
              musicArray = new Uint8Array(this.analyser.frequencyBinCount);
 
-             that.RafTimes && cancelAnimationFrame(that.RafTimes) 
+             Visualizer.timer && (window.cancelAnimationFrame || window.mozCancelAnimationFrame)(Visualizer.timer);
 
 			function v() {
 				that.analyser.getByteFrequencyData(musicArray);
@@ -232,7 +231,7 @@ Visualizer.prototype = {
 				Render(ctxColumn, 'Column', musicArray)();
 			}
 
-			that.RafTimes = requestAnimationFrame(v);
+			Visualizer.timer = requestAnimationFrame(v);
 
 	  },	  
 	  load: function(url,index){
@@ -252,7 +251,6 @@ Visualizer.prototype = {
                     }
                     that.bufferList[index] = buffer;
                     if(++that.loadCount == that.urlList.length){                        
-	                       //that.start(0);
 	                       that.source.start ? that.source.start(0) : that.source.noteOn(0);
 	                       that.animation(that.bufferList);
 	                       that.callBack && that.callBack.apply(that);
