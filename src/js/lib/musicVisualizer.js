@@ -212,8 +212,7 @@ Visualizer.prototype = {
          	 window.oRequestAnimationFrame ||
          	 window.mzRequestAnimationFrame;
         var  musicArray = [];
-        var  that = this;
-        var  timer = null; 	 
+        var  that = this;	 
              
              this.source.buffer = this.bufferList[0];
 
@@ -225,8 +224,7 @@ Visualizer.prototype = {
 
 			function v() {
 				that.analyser.getByteFrequencyData(musicArray);
-				that.currentTime = that.context.currentTime;
-				that.RafTimes = requestAnimationFrame(v);
+				Visualizer.timer = requestAnimationFrame(v);
 				Render(ctxDot, 'Dot', musicArray)();
 				Render(ctxColumn, 'Column', musicArray)();
 			}
